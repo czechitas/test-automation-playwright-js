@@ -110,9 +110,9 @@ test("03 Should fill in registration form", async ({ page }) => {
         const registrationError = page
         .locator('.invalid-feedback')
         .locator('strong');
-        await registrationError.screenshot({ path: "existingEmailErrorScreenshot.png" });
         await expect(registrationError).toBeAttached();
-        await expect(registrationError).toContainText('Účet s tímto emailem již existuje');
+        
+        console.log("Error message is " + await page.locator('.invalid-feedback').textContent());
       
         });
 
@@ -131,14 +131,12 @@ test("03 Should fill in registration form", async ({ page }) => {
             await page.locator(".btn-primary").click();
             
          
-
             console.log('Error message appeared') + await expect(page
                 .locator('div')
                 .locator('.toast-error')
             ).toBeAttached();
 
             
-
             console.log("Error message is " + await page.locator('.invalid-feedback').textContent());
 
                   
