@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 const { username, password } = require("../fixtures/fixtures");
 
 test("01 Should take a screenshot of registration page", async ({ page }) => {
@@ -65,3 +65,81 @@ test("03 Should fill in registration form", async ({ page }) => {
 
     });
 
+    test("04-01 Registration of new user", async ({ page }) => {
+        await page.goto("/registrace");
+        const regUserName = page.locator("input#name");
+        const regEmail = page.locator("input#email");
+        const regPassword = page.locator("input#password");
+        const regPasswordConfirm = page.locator("input#password-confirm");
+            
+        await regUserName.fill("Sarka D");
+        await regEmail.fill("yecopeh939@evasud.com")
+        await regPassword.fill("Czechitas123");
+        await regPasswordConfirm.fill("Czechitas123");
+        await page.locator(".btn-primary").click();
+      
+        const registeredUserName = page
+        .locator('div')
+        .locator('.navbar-right')
+        .locator('strong');
+        await expect(registeredUserName).toHaveText('Sarka D');
+         
+        });
+    
+
+    test("04-02 Registration with an existing email address", async ({ page }) => {
+        await page.goto("/registrace");
+        const regUserName = page.locator("input#name");
+        const regEmail = page.locator("input#email");
+        const regPassword = page.locator("input#password");
+        const regPasswordConfirm = page.locator("input#password-confirm");
+            
+        await regUserName.fill("Sarka D");
+        await regEmail.fill("korci@centrum.cz")
+        await regPassword.fill("Czechitas123");
+        await regPasswordConfirm.fill("Czechitas123");
+        await page.locator(".btn-primary").click();
+
+        const registeredUserName = page
+        .locator('div')
+        .locator('.navbar-right')
+        .locator('strong');
+        await expect(registeredUserName).not.toBeAttached
+        
+
+        const registrationError = page
+        .locator('.invalid-feedback')
+        .locator('strong');
+        await registrationError.screenshot({ path: "existingEmailErrorScreenshot.png" });
+        await expect(registrationError).toBeAttached();
+        await expect(registrationError).toContainText('Účet s tímto emailem již existuje');
+      
+        });
+
+    
+        test("04-03 Registration with an existin email address", async ({ page }) => {
+            await page.goto("/registrace");
+            const regUserName = page.locator("input#name");
+            const regEmail = page.locator("input#email");
+            const regPassword = page.locator("input#password");
+            const regPasswordConfirm = page.locator("input#password-confirm");
+                
+            await regUserName.fill("Sarka D");
+            await regEmail.fill("abc@centrum.cz")
+            await regPassword.fill("Czechitas");
+            await regPasswordConfirm.fill("Czechitas");
+            await page.locator(".btn-primary").click();
+            
+         
+
+            console.log('Error message appeared') + await expect(page
+                .locator('div')
+                .locator('.toast-error')
+            ).toBeAttached();
+
+            
+
+            console.log("Error message is " + await page.locator('.invalid-feedback').textContent());
+
+                  
+            });

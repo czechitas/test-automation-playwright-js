@@ -43,7 +43,7 @@ test("02", async ({ page }) => {
 });
 
 test("03", async ({ page }) => {
-  test.setTimeout(30 * 1000);
+  test.setTimeout(60 * 1000);
   await page.goto("/prihlaseni");
   const loginEmail = page.locator("input#email");
   const loginPassword = page.locator("input#password");
@@ -98,9 +98,19 @@ test("03", async ({ page }) => {
     .locator("tr")
     .all();
 
-  console.log("There are " + rows.length + " rows in the table");
+  console.log("There are " + rows.length + " records.");
   for (const row of rows) {
     const rowText = await row.textContent();
     console.log(rowText);
+
+   await page.getByLabel('Hledat:').fill('Elizabeth');
+   await page.waitForLoadState();
+
+   const searchResultsRows = await page
+   .locator(".DataTables_Table_0_info")
+   .locator("tbody")
+   .locator("tr")
+   .all();
+    
   }
 });
