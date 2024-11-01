@@ -5,7 +5,7 @@
 //    console.log(await page.title());
 // });
 
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 const { username, password } = require("../fixtures/fixtures");
 
 test("01 - Should take a screenshot of registration page", async ({ page }) => {
@@ -43,7 +43,7 @@ test("02", async ({ page }) => {
 });
 
 test("03", async ({ page }) => {
-  test.setTimeout(60 * 1000);
+  test.setTimeout(5 * 1000);
   await page.goto("/prihlaseni");
   const loginEmail = page.locator("input#email");
   const loginPassword = page.locator("input#password");
@@ -111,6 +111,196 @@ test("03", async ({ page }) => {
    .locator("tbody")
    .locator("tr")
    .all();
+
+   const cells = await row.locator("td").all();
+   for (const cell of cells) {
+   console.log(await cell.textContent());
+   }
     
+  }
+
+});
+
+
+
+  test("05 - 01", async ({ page }) => {
+    await page.goto("/prihlaseni");
+    await page.locator(".btn-primary").click();
+    // plus expect page to have url
+    await expect(page.locator('.toast toast-error')).toBeVisible();
+
+ 
+  await loginEmail.fill(username);
+  await loginPassword.fill("abc");
+  await page.locator(".btn-primary").click();
+
+
+  const registrationErrorMsg = page
+  .locator('.invalid-feedback')
+  .locator('strong');
+  await expect(registrationError).toBeAttached();
+
+  });
+
+
+  
+  test("05 - 02", async ({ page }) => {
+  const loginEmail = page.locator("input#email");
+
+  await loginEmail.fill(username);
+  await loginPassword.fill(password);
+  await page.locator(".btn-primary").click();
+
+  const registeredUserName = page
+        .locator('div')
+        .locator('.navbar-right')
+        .locator('strong');
+        await expect(registeredUserName).toHaveText('Lišák Admin');
+
+
+        await page
+        .getByRole("link", {
+          name: "Přihlášky",
+        })
+        .click();
+      await page.waitForLoadState();
+
+         console.log(
+        "Loading is finished" +
+          (await loadingTab.waitFor({ state: "hidden", timeout: 5000 }))
+      );
+
+   
+      await page
+      .locator(".dataTable")
+      .locator("tbody")
+      .locator("tr")
+      .all();
+
+  
+    console.log("There are " + rows.length + " records.");
+    for (const row of rows) {
+      const rowText = await row.textContent();
+      console.log(rowText);
+  }
+
+  const tableCells = await page.locator('td');
+  console.log(await tableCells.nth(0).textContent);
+
+  await page.getByLabel('Hledat:').fill('Elizabeth');
+  await page.waitForLoadState();
+
+});
+
+
+
+
+
+
+
+  test("05 - 04 Logout", async ({ page }) => {
+
+  const userNameClick = await page.getByText("Lišák Admin").click();
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+test("should test login and list applications", async ({ page }) => {
+  await page.goto("/prihlaseni");
+
+  const emailField = page.getByLabel("Email");
+  const passwordField = page.getByLabel("Heslo");
+  const loginButton = page.getByRole("button", { name: "Přihlásit"});
+
+  await emailField.fill(username);
+  await passwordField.fill("invalid");
+  await loginButton.click();
+
+  const toastMessage = page.locator(".toast-message");
+  const fieldError = page.locator(".invalid-feedback");
+  await expect(toastMessage).toHaveText("Některé pole obsahuje špatně zadanou hodnotu");
+  await expect(fieldError).toHaveText("Tyto přihlašovací údaje neodpovídají žadnému záznamu.");
+  await expect(emailField, "email field should be visible").toBeVisible();
+  await expect(passwordField, "password field should be visible").toBeVisible();
+  await expect(loginButton, "login buton should be visible").toBeVisible();
+
+  await emailField.fill(username);
+  await passwordField.fill(password);
+  await loginButton.click();
+
+  const currentUser = page
+      .locator(".navbar-right")
+      .locator("strong");
+  await expect(currentUser, "current user should be displayed").toHaveText(userFullName);
+
+  await page.getByRole("link", {name: "Přihlášky"}).click();
+  await page.waitForLoadState();
+
+  const loadingIndicator = page.locator("#DataTables_Table_0_processing");
+  await loadingIndicator.waitFor({state: "visible"});
+  await loadingIndicator.waitFor({state: "hidden"});
+
+  const pageTitle = await page.getByRole("heading", {level: 1});
+  await expect(pageTitle, "page title should be displayed").toHaveText("Přihlášky");
+
+  const rows = await page
+          .locator(".dataTable")
+          .locator("tbody")
+          .locator("tr")
+          .all();
+
+  await expect(rows.length, "table should have >= " + applicationsPageSize + " rows")
+  .toBeGreaterThanOrEqual(applicationsPageSize);
+
+   for (const row of rows) {
+      const cells = row.locator("td");            
+      await expect(await cells.nth(0).textContent()).toMatch(RegExp.NAME);
+      await expect(await cells.nth(1).textContent()).toMatch(RegExp.DATE);
+      await expect(await cells.nth(2).textContent()).toMatch(RegExp.PAYMENT_TYPE);
+      await expect(await cells.nth(3).textContent()).toMatch(RegExp.TO_PAY);
+  }
+
+
+  await page.locator("input[type='search']").fill(applicationsSearchText);
+  await page.waitForLoadState()
+  await loadingIndicator.waitFor({state: "visible"});
+  await loadingIndicator.waitFor({state: "hidden"});
+
+  const filteredRows = await page
+      .locator(".dataTable")
+      .locator("tbody")
+      .locator("tr")
+      .all();
+
+
+   
+
+  await expect(filteredRows.length, "table should have < " + applicationsPageSize + " rows")
+      .toBeLessThan(applicationsPageSize);
+
+  for (const row of filteredRows) {
+      const cells = row.locator("td");
+      await expect(await cells.nth(0).textContent()).toMatch(RegExp.NAME);
+      await expect(await cells.nth(1).textContent()).toMatch(RegExp.DATE);
+      await expect(await cells.nth(2).textContent()).toMatch(RegExp.PAYMENT_TYPE);
+      await expect(await cells.nth(3).textContent()).toMatch(RegExp.TO_PAY);
   }
 });
