@@ -29,7 +29,6 @@ test("should login and list applications", async ({ page }) => {
 
     await emailField.fill(username);
     await passwordField.fill(password);
-    //Czechitas123
     await loginButton.click();
 
     const currentUser = page

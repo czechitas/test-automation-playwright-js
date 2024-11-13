@@ -8,39 +8,39 @@ const pageTitle = "Přihlášení - Czechitas";
 
 async function openLoginPage(page) {
     await page.goto("/prihlaseni");
-}
+};
 
 function getEmailField(page) {
     return page.getByLabel("Email");
-}
+};
 
 function getPasswordField(page) {
     return page.getByLabel("Heslo");
-}
+};
 
 function getLoginButton(page) {
     return page.getByRole("button", { name: "Přihlásit"});
-}
+};
 
 function getToast(page) {
     return page.locator(".toast-message");
-}
+};
 
 function getFieldError(page) {
     return page.locator(".invalid-feedback");
-}
+};
 
 function getRightNavbar(page) {
     return page.locator(".navbar-right")
-}
+};
 
 function getUserNameDropdown(page) {
     return getRightNavbar(page).locator('[data-toggle="dropdown"]');
-}
+};
 
 function getLogoutLink(page) {
     return page.locator("#logout-link");
-}
+};
 
 async function login(page, username, password) {
     await page.goto("/prihlaseni");
