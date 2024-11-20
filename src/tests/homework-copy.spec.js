@@ -66,7 +66,7 @@ test("04-01 Registration of new user", async ({ page }) => {
   const regPasswordConfirm = page.locator("input#password-confirm");
 
   await regUserName.fill("Sarka D");
-  await regEmail.fill("yecopeh930@evasud.com");
+  await regEmail.fill("yecopeh939@evasud.com");
   await regPassword.fill("Czechitas123");
   await regPasswordConfirm.fill("Czechitas123");
   await page.locator(".btn-primary").click();
@@ -128,38 +128,34 @@ test("04-03 Registration with an existing email address", async ({ page }) => {
   );
 });
 
-// refactored homework
+test.describe("Registration of new user", () => {
+  test.beforeEach(
+    "05 Verify register form fields are visible",
+    async ({ page }) => {
+      await page.goto("/registrace");
+      const regUserName = page.locator("input#name");
+      const regEmail = page.locator("input#email");
+      const regPassword = page.locator("input#password");
+      const regPasswordConfirm = page.locator("input#password-confirm");
+      const registerButton = page.locator(".btn-primary");
 
-async function goToRegistrationPage(page) {
-  await page.goto("/registrace");
-}
+      await page.getByText("Registrace").toBeAttached;
+      console.log("The title is visible");
+      await expect(registerButton).toHaveText("Zaregistrovat");
+      console.log("The Register button is visible");
 
-test.describe("Registration", () => {
-  test.beforeEach("001 - Registration form validation", async ({ page }) => {
-    await goToRegistrationPage(page);
+      await regUserName.toBeEditable;
+      console.log("The Username field is editable");
+      await regEmail.waitFor({ state: "visible" });
+      await expect(regPassword).toBeAttached({ attached: true });
+      await expect(regPasswordConfirm).toBeAttached;
+      console.log(
+        "Both Password and Confirm password fields are present in DOM."
+      );
+    }
+  );
 
-    const regUserName = page.locator("input#name");
-    const regEmail = page.locator("input#email");
-    const regPassword = page.locator("input#password");
-    const regPasswordConfirm = page.locator("input#password-confirm");
-    const registerButton = page.locator(".btn-primary");
-
-    await page.getByText("Registrace").toBeAttached;
-    console.log("The title is visible");
-    await expect(registerButton).toHaveText("Zaregistrovat");
-    console.log("The Register button is visible");
-
-    await regUserName.toBeEditable;
-    console.log("The Username field is editable");
-    await regEmail.waitFor({ state: "visible" });
-    await expect(regPassword).toBeAttached({ attached: true });
-    await expect(regPasswordConfirm).toBeAttached;
-    console.log(
-      "Both Password and Confirm password fields are present in DOM."
-    );
-  });
-
-  test("002 - New Registration", async ({ page }) => {
+  test("05 New Registration", async ({ page }) => {
     await test.step("Getting unique email address", async () => {
       await page.goto("https://www.ipvoid.com/random-email/");
       await page
@@ -180,7 +176,7 @@ test.describe("Registration", () => {
     });
 
     await test.step("Registering new user", async () => {
-      await goToRegistrationPage(page);
+      await page.goto("/registrace");
 
       const regUserName = page.locator("input#name");
       const regEmail = page.locator("input#email");
@@ -219,8 +215,8 @@ test.describe("Registration", () => {
 });
 
 test.describe("Register new user - Negative scenario", () => {
-  test("003 - Register with an existing email address", async ({ page }) => {
-    await goToRegistrationPage(page);
+  test("Register with an existing email address", async ({ page }) => {
+    await page.goto("/registrace");
 
     const regUserName = page.locator("input#name");
     const regEmail = page.locator("input#email");
@@ -247,8 +243,8 @@ test.describe("Register new user - Negative scenario", () => {
     });
   });
 
-  test("004 - Register with weak password", async ({ page }) => {
-    await goToRegistrationPage(page);
+  test("Register with weak password", async ({ page }) => {
+    await page.goto("/registrace");
 
     const regUserName = page.locator("input#name");
     const regEmail = page.locator("input#email");
@@ -260,8 +256,8 @@ test.describe("Register new user - Negative scenario", () => {
       await regUserName.fill("Sarka D");
       await regEmail.click();
       await regEmail.fill(username);
-      await regPassword.fill("123");
-      await regPasswordConfirm.fill("123");
+      await regPassword.fill("Czechitas");
+      await regPasswordConfirm.fill("Czechitas");
       await page.locator(".btn-primary").click();
       await page.screenshot({
         path: "registrationInvalidPasswordScreenshot.png",
