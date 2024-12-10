@@ -9,14 +9,11 @@ test("Zobrazení formuláře registrace", async ({ page }) => {
     const kontrolaHeslaPole = page.getByLabel("Kontrola hesla");
     const tlacitkoZaregistrovat = page.getByRole("button", { name: "Zaregistrovat" });
 
-     
-    // Ověří, že jsou pole viditelná
     await expect(jmenoAPrijmeni).toBeVisible();
     await expect(emailPole).toBeVisible();
     await expect(hesloPole).toBeVisible();
     await expect(kontrolaHeslaPole).toBeVisible();
-     
-    // Ověří tlačítko že je viditelné se správným textem
+
     await expect(tlacitkoZaregistrovat).toBeVisible();
     await expect(tlacitkoZaregistrovat).toHaveText("Zaregistrovat");
 })
@@ -34,7 +31,7 @@ test("Validní registrace uživatele", async ({ page }) => {
     const prihlasen1 = page.locator('strong:has-text("Iv Jindrová")');
 
     await jmenoAPrijmeni.fill("Iv Jindrová");
-    await emailPole.fill("ijindrova@gmail.com");
+    await emailPole.fill("yjindrova@gmail.com");
     await hesloPole.fill("Zima2024!");
     await kontrolaHeslaPole.fill("Zima2024!");
     await tlacitkoZaregistrovat.click();
@@ -78,7 +75,7 @@ test("Nevalidní registrace uživatele - heslo jen s čísly", async ({ page }) 
     const kontrolaHeslaPole = page.getByLabel("Kontrola hesla");
     const tlacitkoZaregistrovat = page.getByRole("button", { name: "Zaregistrovat" });
 
-    const textovaChybaEmail = page.locator("span.invalid-feedback");
+    const textovaChybaEmailCisla = page.getByText('Heslo musí obsahovat minimálně 6 znaků, velké i malé písmeno a číslici')
     const chybaSkakaci = page.locator(".toast.toast-error");
     
     await jmenoAPrijmeni.fill("Iva Jindrová");
@@ -87,10 +84,10 @@ test("Nevalidní registrace uživatele - heslo jen s čísly", async ({ page }) 
     await kontrolaHeslaPole.fill("123456");
     await tlacitkoZaregistrovat.click();
 
-    await textovaChybaEmail.isVisible();
+    await textovaChybaEmailCisla.isVisible();
     await chybaSkakaci.isVisible();
 
-    await expect(textovaChybaEmail).toHaveText("Účet s tímto emailem již existuje");
-    await expect(chybaSkakaci).toHaveText("×Špatně zadané poleNěkteré pole obsahuje špatně zadanou hodnotu")
+    await expect(textovaChybaEmailCisla).toHaveText("Heslo musí obsahovat minimálně 6 znaků, velké i malé písmeno a číslici");
+    await expect(chybaSkakaci).toHaveText("×Špatně zadaná poleVíce polí obsahuje špatně zadanou hodnotu")
 
 })
