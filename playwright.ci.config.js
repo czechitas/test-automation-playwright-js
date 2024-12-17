@@ -8,7 +8,6 @@ const { BASE_URL } = process.env;
  */
 module.exports = defineConfig({
   testDir: "./src/examples",
-  // testDir: './src/examples',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
