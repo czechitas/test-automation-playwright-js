@@ -2,7 +2,7 @@ name: Playwright Tests and Deploy Report to GitHub Pages
 
 on:
   push:
-    branches: [main, feature/tests-ci]
+    branches: [main]
 
 jobs:
   test-and-deploy-report:
@@ -16,27 +16,27 @@ jobs:
       pages: write
       id-token: write
     environment: github-pages
-    
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
-    - name: Install dependencies
-      run: npm ci 
-    - name: Run Playwright tests
-      run: npx playwright test --config=playwright.ci.config.js --grep @ci
-      env:
-        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-      continue-on-error: true  
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Playwright tests
+        run: npx playwright test --config=playwright.ci.config.js --grep @ci
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        continue-on-error: true
 
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      if: always()
-      with:
-        path: playwright-report
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        if: always()
+        with:
+          path: playwright-report
 
-    - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v4
-      if: always()
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        if: always()
