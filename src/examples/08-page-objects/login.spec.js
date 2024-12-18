@@ -23,7 +23,7 @@ test.describe("Login Page", async () => {
     await expect(
       loginPage.emailField,
       "email field should be visible"
-    ).toBeHidden();
+    ).toBeVisible();
     await expect(
       loginPage.emailField,
       "email field should be enabled"

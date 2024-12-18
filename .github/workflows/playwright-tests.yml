@@ -2,7 +2,7 @@ name: Playwright Tests and Deploy Report to GitHub Pages
 
 on:
   push:
-    branches: [feature/tests-ci]
+    branches: [main]
 
 jobs:
   test-and-deploy-report:
