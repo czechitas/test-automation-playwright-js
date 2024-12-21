@@ -32,7 +32,7 @@ test.describe("Registrační stránka a validní registrace", async () => {
         const prihlaseni = await prihlasen(page);
 
         await poleJmenoPrijmeni.fill("Iv Jindrová");
-        await poleEmail.fill("fjindrova@gmail.com");
+        await poleEmail.fill('ijindrova' + Date.now() + '@gmail.com')
         await poleHeslo.fill("Zima2024!");
         await poleKontrolaHesla.fill("Zima2024!");
         await zaregistrovatTlacitko.click();
